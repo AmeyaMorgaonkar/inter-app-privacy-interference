@@ -20,7 +20,6 @@ PackageManager access, **Supabase** for backend, and the
 ├── src/
 │   └── lib/
 │       └── supabase.ts            # Supabase client
-├── .env.example                   # Env template (committed)
 └── .env                           # Real credentials (gitignored)
 ```
 
