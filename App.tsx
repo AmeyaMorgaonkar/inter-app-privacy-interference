@@ -1,13 +1,39 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import {
+  useFonts,
+  Geist_400Regular,
+  Geist_500Medium,
+  Geist_600SemiBold,
+  Geist_700Bold,
+} from "@expo-google-fonts/geist";
+import {
+  GeistMono_400Regular,
+  GeistMono_500Medium,
+  GeistMono_600SemiBold,
+  GeistMono_700Bold,
+} from "@expo-google-fonts/geist-mono";
 
 import { ping } from "./modules/package-manager";
+import { ComponentGallery } from "./src/screens/ComponentGallery";
+import { colors, fonts, spacing } from "./src/theme/tokens";
 import { supabase } from "./src/lib/supabase";
 
 export default function App() {
   const [nativePing, setNativePing] = useState<string>("…");
   const [supabasePing, setSupabasePing] = useState<string>("…");
+
+  const [fontsLoaded] = useFonts({
+    Geist_400Regular,
+    Geist_500Medium,
+    Geist_600SemiBold,
+    Geist_700Bold,
+    GeistMono_400Regular,
+    GeistMono_500Medium,
+    GeistMono_600SemiBold,
+    GeistMono_700Bold,
+  });
 
   useEffect(() => {
     try {
@@ -19,11 +45,11 @@ export default function App() {
 
     (async () => {
       try {
-        const { data, error } = await supabase.rpc("", {});
+        const { error } = await supabase.rpc("", {});
         if (error) {
           setSupabasePing(
             error.message.includes("function")
-              ? "✅ Connected (no RPC defined yet)"
+              ? "✅ Connected"
               : `Error: ${error.message}`
           );
         } else {
@@ -35,22 +61,25 @@ export default function App() {
     })();
   }, []);
 
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.accent} />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Privacy Interference</Text>
-      <Text style={styles.subtitle}>Milestone 1 — Scaffolding</Text>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Kotlin Module:</Text>
-        <Text style={styles.value}>ping() → {nativePing}</Text>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Supabase:</Text>
-        <Text style={styles.value}>{supabasePing}</Text>
-      </View>
-
       <StatusBar style="light" />
+      <View style={styles.statusBarCard}>
+        <Text style={styles.statusText}>
+          Kotlin: <Text style={styles.monoValue}>{nativePing}</Text> | Supabase:{" "}
+          <Text style={styles.monoValue}>{supabasePing}</Text>
+        </Text>
+      </View>
+
+      <ComponentGallery />
     </View>
   );
 }
@@ -58,39 +87,30 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0A0A0A",
-    alignItems: "center",
+    backgroundColor: colors.background,
+    paddingTop: spacing.xxxl,
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
     justifyContent: "center",
-    padding: 24,
+    alignItems: "center",
   },
-  title: {
-    color: "#FFFFFF",
-    fontSize: 24,
-    fontWeight: "700",
-    marginBottom: 4,
+  statusBarCard: {
+    backgroundColor: colors.surface2,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
-  subtitle: {
-    color: "#666666",
-    fontSize: 14,
-    marginBottom: 32,
-  },
-  card: {
-    backgroundColor: "#1A1A1A",
-    borderRadius: 12,
-    padding: 16,
-    width: "100%",
-    marginBottom: 12,
-  },
-  label: {
-    color: "#888888",
+  statusText: {
+    fontFamily: fonts.sansMedium,
     fontSize: 12,
-    marginBottom: 4,
-    textTransform: "uppercase",
-    letterSpacing: 1,
+    color: colors.foregroundMuted,
   },
-  value: {
-    color: "#4ADE80",
-    fontSize: 16,
-    fontWeight: "600",
+  monoValue: {
+    fontFamily: fonts.mono,
+    color: colors.accent,
   },
 });
+
