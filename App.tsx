@@ -1,6 +1,12 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {
   useFonts,
   Geist_400Regular,
@@ -17,10 +23,14 @@ import {
 
 import { ping } from "./modules/package-manager";
 import { ComponentGallery } from "./src/screens/ComponentGallery";
+import { AppEnumerationDebugScreen } from "./src/screens/AppEnumerationDebugScreen";
 import { colors, fonts, spacing } from "./src/theme/tokens";
 import { supabase } from "./src/lib/supabase";
 
 export default function App() {
+  const [activeScreen, setActiveScreen] = useState<"enumeration" | "gallery">(
+    "enumeration"
+  );
   const [nativePing, setNativePing] = useState<string>("…");
   const [supabasePing, setSupabasePing] = useState<string>("…");
 
@@ -49,11 +59,11 @@ export default function App() {
         if (error) {
           setSupabasePing(
             error.message.includes("function")
-              ? "✅ Connected"
+              ? "Connected"
               : `Error: ${error.message}`
           );
         } else {
-          setSupabasePing("✅ Connected");
+          setSupabasePing("Connected");
         }
       } catch (err: any) {
         setSupabasePing(`Error: ${err.message}`);
@@ -79,7 +89,47 @@ export default function App() {
         </Text>
       </View>
 
-      <ComponentGallery />
+      <View style={styles.tabContainer}>
+        <TouchableOpacity
+          style={[
+            styles.tabButton,
+            activeScreen === "enumeration" && styles.activeTabButton,
+          ]}
+          onPress={() => setActiveScreen("enumeration")}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeScreen === "enumeration" && styles.activeTabText,
+            ]}
+          >
+            App Enumeration
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.tabButton,
+            activeScreen === "gallery" && styles.activeTabButton,
+          ]}
+          onPress={() => setActiveScreen("gallery")}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeScreen === "gallery" && styles.activeTabText,
+            ]}
+          >
+            Component Gallery
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {activeScreen === "enumeration" ? (
+        <AppEnumerationDebugScreen />
+      ) : (
+        <ComponentGallery />
+      )}
     </View>
   );
 }
@@ -112,5 +162,29 @@ const styles = StyleSheet.create({
     fontFamily: fonts.mono,
     color: colors.accent,
   },
+  tabContainer: {
+    flexDirection: "row",
+    backgroundColor: colors.surface1,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  tabButton: {
+    flex: 1,
+    paddingVertical: spacing.sm,
+    alignItems: "center",
+    borderBottomWidth: 2,
+    borderBottomColor: "transparent",
+  },
+  activeTabButton: {
+    borderBottomColor: colors.accent,
+  },
+  tabText: {
+    fontFamily: fonts.sansMedium,
+    fontSize: 13,
+    color: colors.foregroundMuted,
+  },
+  activeTabText: {
+    color: colors.foreground,
+    fontFamily: fonts.sansSemiBold,
+  },
 });
-

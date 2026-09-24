@@ -1,1 +1,6 @@
-export { ping } from "./src/PackageManagerModule";
+export {
+  ping,
+  getInstalledApps,
+  AppEnumerationResult,
+  PermissionDetail,
+} from "./src/PackageManagerModule";

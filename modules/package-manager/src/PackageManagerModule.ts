@@ -1,16 +1,27 @@
 import { requireNativeModule } from "expo-modules-core";
 
-/**
- * PackageManager native module — wraps Android's PackageManager API.
- *
- * Currently a skeleton that only exposes a `ping()` function for
- * build verification. Real functionality will be added in Milestone 3.
- */
+export interface PermissionDetail {
+  name: string;
+  granted: boolean;
+}
 
-// The native module is autolinked via expo-module.config.json.
-// The string must match the module name defined in the Kotlin class.
+export interface AppEnumerationResult {
+  packageName: string;
+  displayName: string;
+  installSource: string;
+  firstInstallTime: number;
+  lastUpdateTime: number;
+  isSystemApp: boolean;
+  icon: string | null;
+  permissions: PermissionDetail[];
+}
+
 const PackageManagerModule = requireNativeModule("PackageManager");
 
 export function ping(): string {
   return PackageManagerModule.ping();
+}
+
+export async function getInstalledApps(): Promise<AppEnumerationResult[]> {
+  return await PackageManagerModule.getInstalledApps();
 }

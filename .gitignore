@@ -11,6 +11,10 @@ expo-env.d.ts
 
 # Native
 .kotlin/
+.gradle/
+**/build/
+**/.gradle/
+**/.cxx/
 *.orig.*
 *.jks
 *.p8
@@ -41,3 +45,7 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# supabase
+supabase/.temp/
+.temp/
