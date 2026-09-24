@@ -1,25 +1,11 @@
 # Inter-App Privacy Interference
 
-Visualizes how installed Android apps share tracker SDKs — revealing the
+Visualizes how installed Android apps share tracker SDKs, revealing the
 cross-app picture advertisers and data brokers can assemble about you.
 
 Built with **Expo (React Native)**, a **Kotlin native module** for
 PackageManager access, **Supabase** for backend, and the
 **Exodus Privacy** tracker database.
-
-## Quick Start
-
-```bash
-# 1. Install dependencies
-npm install
-
-# 2. Set up environment variables
-cp .env.example .env
-# Edit .env with your Supabase project URL and anon key
-
-# 3. Run on Android (USB debugging or emulator)
-npx expo run:android
-```
 
 ## Project Structure
 
@@ -34,7 +20,6 @@ npx expo run:android
 ├── src/
 │   └── lib/
 │       └── supabase.ts            # Supabase client
-├── .env.example                   # Env template (committed)
 └── .env                           # Real credentials (gitignored)
 ```
 
